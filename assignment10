@@ -1,0 +1,73 @@
+#include <stdio.h>
+
+// Returns the day of the week (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
+int getDayNumber(int day, int month, int year) {
+    static int t[] = {0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4};
+    if (month < 3) {
+        year -= 1;
+    }
+    return (year + year / 4 - year / 100 + year / 400 + t[month - 1] + day) % 7;
+}
+
+// Checks if the given year is a leap year
+int isLeapYear(int year) {
+    return (year % 400 == 0) || (year % 4 == 0 && year % 100 != 0);
+}
+
+// Returns the number of days in a given month (1-12)
+int getDaysInMonth(int month, int year) {
+    int days[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    if (month == 2 && isLeapYear(year)) {
+        return 29;
+    }
+    return days[month - 1];
+}
+
+// Prints the full 12-month calendar for the given year
+void printCalendar(int year) {
+    const char *months[] = {
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    };
+
+    printf("\nCalendar for %d\n", year);
+
+    for (int month = 1; month <= 12; month++) {
+        int days = getDaysInMonth(month, year);
+        int startDay = getDayNumber(1, month, year);
+
+        printf("\n  ------------%s-------------\n", months[month - 1]);
+        printf("  Sun  Mon  Tue  Wed  Thu  Fri  Sat\n");
+
+        // Print leading spaces for the first week
+        int currentCol;
+        for (currentCol = 0; currentCol < startDay; currentCol++) {
+            printf("     ");
+        }
+
+        // Print all days of the month
+        for (int day = 1; day <= days; day++) {
+            printf("%5d", day);
+            if (++currentCol > 6) {
+                currentCol = 0;
+                printf("\n");
+            }
+        }
+
+        if (currentCol != 0) {
+            printf("\n");
+        }
+    }
+}
+
+int main() {
+    int year;
+    printf("Enter a year: ");
+    if (scanf("%d", &year) != 1 || year < 1) {
+        printf("Please enter a valid positive year.\n");
+        return 1;
+    }
+
+    printCalendar(year);
+    return 0;
+}
