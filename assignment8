@@ -1,0 +1,21 @@
+#include <stdio.h>
+
+// Function taking integer pointers as parameters
+void swap(int *a, int *b) {
+    int temp = *a;  // Store the value at address 'a' in temp
+    *a = *b;        // Copy the value at address 'b' into address 'a'
+    *b = temp;      // Copy the stored value in temp into address 'b'
+}
+
+int main() {
+    int x = 10, y = 20;
+
+    printf("Before swap: x = %d, y = %d\n", x, y);
+
+    // Pass the memory addresses of x and y
+    swap(&x, &y);
+
+    printf("After swap:  x = %d, y = %d\n", x, y);
+
+    return 0;
+}
