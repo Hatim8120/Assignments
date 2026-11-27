@@ -1,0 +1,113 @@
+#include <stdio.h>
+#include <string.h>
+struct SemiconductorDevice {
+    int deviceID;
+    char deviceType[20];
+    float Vf;
+    float Ir;
+    float Vr;
+};
+void checkDeviceLimits(struct SemiconductorDevice dev) {
+    int isValid = 1;
+    printf("\n----------------------------------------\n");
+    printf("Checking Device ID: %d (%s)\n", dev.deviceID, dev.deviceType);
+    printf("Measured -> Vf: %.2f, Ir: %.2f, Vr: %.2f\n", dev.Vf, dev.Ir, dev.Vr);
+    if (strcasecmp(dev.deviceType, "Diode") == 0) {
+        if (dev.Vf > 0.8) {
+            printf("  [!] Vf exceeds limit (Max allowed: <= 0.8)\n");
+            isValid = 0;
+        }
+        if (dev.Ir > 5.0) {
+            printf("  [!] Ir exceeds limit (Max allowed: <= 5.0)\n");
+            isValid = 0;
+        }
+        if (dev.Vr < 50.0) {
+            printf("  [!] Vr is below required limit (Min required: >= 50.0)\n");
+            isValid = 0;
+        }
+    } 
+    else if (strcasecmp(dev.deviceType, "BJT") == 0) {
+        if (dev.Vf > 0.7) {
+            printf("  [!] Vf exceeds limit (Max allowed: <= 0.7)\n");
+            isValid = 0;
+        }
+        if (dev.Ir > 10.0) {
+            printf("  [!] Ir exceeds limit (Max allowed: <= 10.0)\n");
+            isValid = 0;
+        }
+        if (dev.Vr < 40.0) {
+            printf("  [!] Vr is below required limit (Min required: >= 40.0)\n");
+            isValid = 0;
+        }
+    } 
+    else if (strcasecmp(dev.deviceType, "MOSFET") == 0) {
+        if (dev.Vf > 4.0) {
+            printf("  [!] Vf exceeds limit (Max allowed: <= 4.0)\n");
+            isValid = 0;
+        }
+        if (dev.Ir > 1.0) {
+            printf("  [!] Ir exceeds limit (Max allowed: <= 1.0)\n");
+            isValid = 0;
+        }
+        if (dev.Vr < 60.0) {
+            printf("  [!] Vr is below required limit (Min required: >= 60.0)\n");
+            isValid = 0;
+        }
+    } 
+    else if (strcasecmp(dev.deviceType, "LED") == 0) {
+        if (dev.Vf > 3.6) {
+            printf("  [!] Vf exceeds limit (Max allowed: <= 3.6)\n");
+            isValid = 0;
+        }
+        if (dev.Ir > 10.0) {
+            printf("  [!] Ir exceeds limit (Max allowed: <= 10.0)\n");
+            isValid = 0;
+        }
+        if (dev.Vr < 5.0) {
+            printf("  [!] Vr is below required limit (Min required: >= 5.0)\n");
+            isValid = 0;
+        }
+    } 
+    else {
+        printf("  [!] Unknown device type entered.\n");
+        isValid = 0;
+    }
+    if (isValid) {
+        printf("  -> Status: ALL PARAMETERS WITHIN PERMISSIBLE LIMITS.\n");
+    } else {
+        printf("  -> Status: DEVICE EXCEEDS SPECIFIED LIMITS!\n");
+    }
+}
+int main() {
+    int n, i;
+    printf("Enter the number of semiconductor devices: ");
+    if (scanf("%d", &n) != 1 || n <= 0) {
+        printf("Invalid input.\n");
+        return 1;
+    }
+    struct SemiconductorDevice devices[n];
+    for (i = 0; i < n; i++) {
+        printf("\n--- Enter details for Device %d ---\n", i + 1);
+        printf("Device ID: ");
+        scanf("%d", &devices[i].deviceID);
+        
+        printf("Device Type (Diode / BJT / MOSFET / LED): ");
+        scanf("%s", devices[i].deviceType);
+        
+        printf("Forward Voltage (Vf): ");
+        scanf("%f", &devices[i].Vf);
+        
+        printf("Reverse Leakage Current (Ir): ");
+        scanf("%f", &devices[i].Ir);
+        
+        printf("Rated Voltage (Vr): ");
+        scanf("%f", &devices[i].Vr);
+    }
+    printf("\n\n========================================");
+    printf("\n      SEMICONDUCTOR DEVICE ANALYSIS     ");
+    printf("\n========================================");
+   for (i = 0; i < n; i++) {
+        checkDeviceLimits(devices[i]);
+    }
+    return 0;
+}
